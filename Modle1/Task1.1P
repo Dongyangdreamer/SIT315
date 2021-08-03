@@ -1,1 +1,16 @@
+const uint8_t TEM_PIN = A1;
 
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  int temp = analogRead(TEM_PIN);
+  temp = temp * 0.48828;
+  Serial.print("Temperature: ");
+  Serial.print(temp);
+  Serial.println("C");
+  delay(1000);
+}

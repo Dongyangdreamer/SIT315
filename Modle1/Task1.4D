@@ -1,0 +1,61 @@
+const uint8_t SWT_PIN = 2;
+const uint8_t SEN_PIN = 8;
+const uint8_t SEN_IN = A1;
+const uint8_t LED_PIN = 12;
+const uint8_t LED1_PIN = 7;
+
+uint8_t sen_state = LOW;
+uint8_t led1_state = LOW;
+
+void setup()
+{
+  pinMode(SEN_PIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(LED1_PIN, OUTPUT);
+  pinMode(SWT_PIN, INPUT_PULLUP);
+
+  starttimer();
+  attachInterrupt(digitalPinToInterrupt(SWT_PIN), toggle, FALLING);
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  if (sen_state == HIGH)
+  {
+    int temp = analogRead(SEN_IN);
+    temp = temp * 0.48828;
+    Serial.print("Temperature: ");
+    Serial.print(temp);
+    Serial.println("C");
+    digitalWrite(LED_PIN, HIGH);
+    delay(250);
+    digitalWrite(LED_PIN, LOW);
+    delay(750);
+  }
+}
+
+void toggle()
+{
+  sen_state = !sen_state;
+  digitalWrite(SEN_PIN, sen_state);
+}
+
+void starttimer()
+{
+  noInterrupts();
+  TCCR1A = 0;
+  TCCR1B = 0;
+  TCNT1 = 0;
+  
+  OCR1A = 62499;
+  TCCR1B |= (1 << WGM12);
+  TCCR1B |= (1 << CS12) | (0 << CS11) | (0 << CS10);
+  TIMSK1 |= (1 << OCIE1A);
+  interrupts();
+}
+
+ISR (TIMER1_COMPA_vect)
+{
+  digitalWrite(LED1_PIN, digitalRead(LED1_PIN) ^1);
+}

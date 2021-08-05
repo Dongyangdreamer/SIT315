@@ -1,0 +1,33 @@
+const uint8_t SWT_PIN = 2;
+const uint8_t SEN_PIN = 8;
+const uint8_t SEN_IN = A1;
+
+uint8_t sen_state = LOW;
+
+void setup()
+{
+  pinMode(SEN_PIN, OUTPUT);
+  pinMode(SWT_PIN, INPUT_PULLUP);
+
+  attachInterrupt(digitalPinToInterrupt(SWT_PIN), toggle, FALLING);
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  if (sen_state == HIGH)
+  {
+    int temp = analogRead(SEN_IN);
+    temp = temp * 0.48828;
+    Serial.print("Temperature: ");
+    Serial.print(temp);
+    Serial.println("C");
+    delay(1000);
+  }
+}
+
+void toggle()
+{
+  sen_state = !sen_state;
+  digitalWrite(SEN_PIN, sen_state);
+}

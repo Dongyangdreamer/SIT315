@@ -1,6 +1,7 @@
 const uint8_t SWT_PIN = 2;
 const uint8_t SEN_PIN = 8;
 const uint8_t SEN_IN = A1;
+const uint8_t LED_PIN = 12;
 
 uint8_t sen_state = LOW;
 
@@ -22,7 +23,10 @@ void loop()
     Serial.print("Temperature: ");
     Serial.print(temp);
     Serial.println("C");
-    delay(1000);
+    digitalWrite(LED_PIN, HIGH);
+    delay(250);
+    digitalWrite(LED_PIN, LOW);
+    delay(750);
   }
 }
 
